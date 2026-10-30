@@ -1,0 +1,73 @@
+# Every module can be disabled independently. /gep reload applies changes.
+local-chat:
+  enabled: true
+  radius-blocks: 100.0
+  staff-see-all: true
+death-messages:
+  enabled: true
+  messages:
+    - '<player> has left the civilization chat.'
+    - '<player> discovered the limits of plot armor.'
+    - '<player> is now part of the history curriculum.'
+    - '<player> took a permanent lunch break.'
+death-lightning:
+  enabled: true
+elimination:
+  enabled: true
+  # spectator or ban. Bans are GEP-owned access bans, not vanilla ban-list entries.
+  mode: spectator
+  staff-exempt: true
+  ban-message: 'You have been eliminated from this event. Contact staff about a revive.'
+spectator-restrictions:
+  enabled: true
+  # Applies to ALL players in spectator, including spectators set by another plugin.
+  block-chat: true
+  block-commands: true
+  # Empty by default: allow only commands you deliberately want spectators to use.
+  allowed-commands: []
+  block-teleports: true
+  block-spectating-entities: true
+chat-mute:
+  enabled: true
+  block-private-messages: false
+freeze:
+  enabled: true
+  block-interactions: true
+  prevent-damage: true
+  block-teleports: true
+target-selectors:
+  # /freeze selectors target online players only; requires gep.freeze.
+  enabled: true
+teleport-restrictions:
+  # Automatic plugin/server corrections never send chat warnings.
+  notify-on-denial: true
+  message-cooldown-seconds: 3
+vanish:
+  # Controls manual vanish and automatic lore-visit hiding.
+  enabled: true
+staff-requests:
+  enabled: true
+  lore:
+    enabled: true
+    hidden-visits: true
+  kill:
+    enabled: true
+  support:
+    enabled: true
+  materials:
+    enabled: true
+  cooldown-seconds: 60
+  prompt-timeout-seconds: 120
+  claiming:
+    enabled: true
+back:
+  enabled: true
+  # Last three successful teleport origins, newest first. /back [1|2|3]
+  history-size: 3
+private-message-spy:
+  enabled: true
+audit:
+  enabled: true
+history:
+  enabled: true
+  max-entries-per-player: 200

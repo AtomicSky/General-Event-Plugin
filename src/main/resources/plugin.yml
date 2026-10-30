@@ -1,0 +1,145 @@
+name: GEP
+version: '1.0.11'
+main: dev.gep.GEP
+api-version: '1.21.11'
+description: Configurable tools for multiday civilization events.
+author: Soren
+commands:
+  gep:
+    description: GEP help, history, audit and reload
+    usage: /gep
+  staff:
+    description: Submit or manage staff requests
+    usage: /staff
+  back:
+    description: Return to a saved teleport origin
+    usage: /back [1-3]
+  freeze:
+    description: Freeze or unfreeze a player
+    usage: /freeze <player|selector> [on|off]
+  chatmute:
+    description: Mute or unmute public chat
+    usage: /chatmute [on|off]
+  vanish:
+    description: Toggle your own staff vanish
+    usage: /vanish [on|off|toggle]
+  revive:
+    description: Revive a GEP-eliminated player
+    usage: /revive <player>
+permissions:
+  gep.staff:
+    description: Staff identity marker; does not grant other powers
+    default: op
+  gep.chat.seeall:
+    description: Read all local public chat
+    default: op
+  gep.chat.mute:
+    description: Mute and unmute public chat
+    default: op
+  gep.chat.mute.bypass:
+    description: Speak while public chat is muted
+    default: op
+  gep.spy:
+    description: Read vanilla private message copies
+    default: op
+  gep.freeze:
+    description: Freeze and unfreeze players
+    default: op
+  gep.freeze.exempt:
+    description: Immunity to freezing
+    default: op
+  gep.elimination.exempt:
+    description: Immunity to death elimination
+    default: op
+  gep.revive:
+    description: Revive eliminated players, online or offline
+    default: op
+  gep.back:
+    description: Track teleport origins and use /back
+    default: op
+  gep.requests.view:
+    description: Receive and list pending requests
+    default: op
+  gep.requests.visit.lore:
+    description: Visit lore requests while hidden
+    default: op
+  gep.requests.visit.kill:
+    description: Visit kill ticket requesters
+    default: op
+  gep.requests.visit.support:
+    description: Visit general support requesters
+    default: op
+  gep.requests.visit.materials:
+    description: Visit materials requesters
+    default: op
+  gep.requests.decide:
+    description: Approve or deny kill tickets
+    default: op
+  gep.requests.close:
+    description: Close lore and materials requests
+    default: op
+  gep.requests.release:
+    description: Release an existing request claim
+    default: op
+  gep.vanish:
+    description: Toggle your own vanish at any time
+    default: op
+  gep.vanish.see:
+    description: See vanished staff and hidden lore visitors
+    default: op
+  gep.history:
+    description: View saved player history
+    default: op
+  gep.audit:
+    description: View latest audit log in game
+    default: op
+  gep.config:
+    description: Edit settings through the config menu
+    default: op
+  gep.reload:
+    description: Reload GEP config
+    default: op
+  gep.spectator.bypass:
+    description: Bypass spectator chat, command and teleport restrictions
+    default: op
+  gep.requests.submit.lore:
+    description: Submit lore requests
+    default: true
+  gep.requests.submit.kill:
+    description: Submit kill requests
+    default: true
+  gep.requests.submit.support:
+    description: Submit general support requests
+    default: true
+  gep.requests.submit.materials:
+    description: Submit materials requests
+    default: true
+  gep.admin:
+    description: All staff capabilities (each child can be negated in LuckPerms)
+    default: false
+    children:
+      gep.staff: true
+      gep.chat.seeall: true
+      gep.chat.mute: true
+      gep.chat.mute.bypass: true
+      gep.spy: true
+      gep.freeze: true
+      gep.freeze.exempt: true
+      gep.elimination.exempt: true
+      gep.revive: true
+      gep.back: true
+      gep.requests.view: true
+      gep.requests.visit.lore: true
+      gep.requests.visit.kill: true
+      gep.requests.visit.support: true
+      gep.requests.visit.materials: true
+      gep.requests.decide: true
+      gep.requests.close: true
+      gep.requests.release: true
+      gep.vanish: true
+      gep.vanish.see: true
+      gep.history: true
+      gep.audit: true
+      gep.config: true
+      gep.reload: true
+      gep.spectator.bypass: true
