@@ -43,9 +43,13 @@ teleport-restrictions:
   notify-on-denial: true
   message-cooldown-seconds: 3
 vanish:
+  indicator:
+    enabled: true
   # Controls manual vanish and automatic lore-visit hiding.
   enabled: true
 staff-requests:
+  dashboard:
+    enabled: true
   enabled: true
   lore:
     enabled: true

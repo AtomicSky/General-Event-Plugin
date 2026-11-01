@@ -422,4 +422,30 @@ class GEPTest {
         var event=new org.bukkit.event.inventory.InventoryClickEvent(user.getOpenInventory(),org.bukkit.event.inventory.InventoryType.SlotType.CONTAINER,13,org.bukkit.event.inventory.ClickType.LEFT,org.bukkit.event.inventory.InventoryAction.PICKUP_ALL);
         server.getPluginManager().callEvent(event);ticks();assertEquals(Requests.Kind.SUPPORT,p.requests.tickets().getFirst().kind());
     }
+
+    @Test void dashboardRequiresPermissionAndShowsPersistentPendingRequests() {
+        var user=player("User",5);var staff=player("Helper",0);
+        grant(staff,"requests.view");
+        assertThrows(IllegalArgumentException.class,()->RequestDashboard.open(p,staff,0));
+        grant(staff,"requests.dashboard");
+        UUID id=p.requests.create(user,Requests.Kind.SUPPORT,"");
+        RequestDashboard.open(p,staff,0);
+        var menu=(RequestDashboard)staff.getOpenInventory().getTopInventory().getHolder();
+        assertEquals(id,menu.entries.get(0));
+        grant(staff,"requests.close");
+        RequestDashboard.detail(p,staff,id,0);
+        var click=new org.bukkit.event.inventory.InventoryClickEvent(staff.getOpenInventory(),org.bukkit.event.inventory.InventoryType.SlotType.CONTAINER,12,org.bukkit.event.inventory.ClickType.LEFT,org.bukkit.event.inventory.InventoryAction.PICKUP_ALL);
+        server.getPluginManager().callEvent(click);ticks();assertEquals("CLOSED",p.requests.ticket(id).result());
+        assertTrue(((RequestDashboard)staff.getOpenInventory().getTopInventory().getHolder()).entries.isEmpty());
+        p.getConfig().set("staff-requests.dashboard.enabled",false);
+        assertThrows(IllegalArgumentException.class,()->RequestDashboard.open(p,staff,0));
+    }
+    @Test void vanishIndicatorTracksHidingAndClearsOnDisableAndReveal() {
+        var staff=player("Helper",0);grant(staff,"vanish");
+        p.requests.vanish(staff,new String[]{"on"});assertTrue(p.requests.indicators.contains(staff.getUniqueId()));
+        p.getConfig().set("vanish.indicator.enabled",false);p.requests.tick();
+        assertFalse(p.requests.indicators.contains(staff.getUniqueId()));assertTrue(p.requests.vanished(staff));
+        p.getConfig().set("vanish.indicator.enabled",true);p.requests.tick();assertTrue(p.requests.indicators.contains(staff.getUniqueId()));
+        p.requests.vanish(staff,new String[]{"off"});assertFalse(p.requests.indicators.contains(staff.getUniqueId()));
+    }
 }

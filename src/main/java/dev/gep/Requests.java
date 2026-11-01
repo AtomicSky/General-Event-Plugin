@@ -33,6 +33,7 @@ final class Requests implements Listener {
     final GEP p;
     final Map<UUID, Long> prompts = new HashMap<>();
     final Set<UUID> hidden = new HashSet<>();
+    final Set<UUID> indicators = new HashSet<>();
     Requests(GEP plugin) { p = plugin; }
     String root(UUID id) { return "tickets." + id + "."; }
     boolean enabled(Kind kind) { return p.enabled("staff-requests") && p.enabled("staff-requests." + kind.key()); }
@@ -261,6 +262,10 @@ final class Requests implements Listener {
     }
     void visibility(Player player, boolean hide) {
         if (hide) hidden.add(player.getUniqueId()); else hidden.remove(player.getUniqueId());
+        if(hide && p.enabled("vanish.indicator")) {
+            player.sendActionBar(Component.text("VANISHED - Hidden from players", NamedTextColor.AQUA));
+            indicators.add(player.getUniqueId());
+        } else if(indicators.remove(player.getUniqueId())) player.sendActionBar(Component.empty());
         for (Player viewer : Bukkit.getOnlinePlayers()) {
             if (viewer.equals(player)) continue;
             if (hide && !viewer.hasPermission("gep.vanish.see")) viewer.hidePlayer(p, player);
@@ -294,6 +299,7 @@ final class Requests implements Listener {
         if (action.equals("cancel")) { prompts.remove(player.getUniqueId()); GEP.tell(player, "Request input cancelled."); return; }
         if (action.equals("target") && args.length == 2) { input(player, args[1]); return; }
         p.feature("staff-requests");
+        if (action.equals("dashboard")) { RequestDashboard.open(p, player, 0); return; }
         if (action.equals("list")) {
             GEP.require(player, "requests.view");
             List<Ticket> pending = tickets().stream().filter(t -> t.result.equals("PENDING") && enabled(t.kind)).toList();
@@ -314,6 +320,7 @@ final class Requests implements Listener {
     List<String> tabs(CommandSender sender, String[] args) {
         List<String> values = new ArrayList<>(List.of("return", "cancel"));
         if (sender.hasPermission("gep.requests.view")) values.add("list");
+        if (sender.hasPermission("gep.requests.dashboard") && sender.hasPermission("gep.requests.view")) values.add("dashboard");
         if (sender.hasPermission("gep.requests.decide")) values.addAll(List.of("approve", "deny"));
         if (sender.hasPermission("gep.requests.close")) values.add("close");
         if (sender.hasPermission("gep.requests.release")) values.add("release");

@@ -1,5 +1,5 @@
 name: GEP
-version: '1.0.11'
+version: '1.1.0'
 main: dev.gep.GEP
 api-version: '1.21.11'
 description: Configurable tools for multiday civilization events.
@@ -56,6 +56,9 @@ permissions:
     default: op
   gep.back:
     description: Track teleport origins and use /back
+    default: op
+  gep.requests.dashboard:
+    description: Open the staff request dashboard
     default: op
   gep.requests.view:
     description: Receive and list pending requests
@@ -128,6 +131,7 @@ permissions:
       gep.elimination.exempt: true
       gep.revive: true
       gep.back: true
+      gep.requests.dashboard: true
       gep.requests.view: true
       gep.requests.visit.lore: true
       gep.requests.visit.kill: true
