@@ -147,6 +147,7 @@ final class Rules implements Listener {
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     void blockChat(ChatEvent e) {
         if (chatBlocked(e.getPlayer())) { e.setCancelled(true); GEP.tell(e.getPlayer(), "Spectators cannot chat."); }
+        else if (p.requests.staffInput(e)) return;
         else if (muted(e.getPlayer())) { e.setCancelled(true); GEP.tell(e.getPlayer(), "Public chat is muted by staff."); }
     }
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

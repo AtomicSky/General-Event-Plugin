@@ -1,3 +1,5 @@
+staff-chat:
+  enabled: true
 # Every module can be disabled independently. /gep reload applies changes.
 local-chat:
   enabled: true

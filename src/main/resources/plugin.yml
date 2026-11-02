@@ -1,5 +1,5 @@
 name: GEP
-version: '1.1.0'
+version: '1.1.1'
 main: dev.gep.GEP
 api-version: '1.21.11'
 description: Configurable tools for multiday civilization events.
@@ -27,6 +27,12 @@ commands:
     description: Revive a GEP-eliminated player
     usage: /revive <player>
 permissions:
+  gep.staffchat.send:
+    description: Send staff messages and toggle staff chat mode
+    default: op
+  gep.staffchat.receive:
+    description: Receive private staff chat
+    default: op
   gep.staff:
     description: Staff identity marker; does not grant other powers
     default: op
@@ -121,6 +127,8 @@ permissions:
     description: All staff capabilities (each child can be negated in LuckPerms)
     default: false
     children:
+      gep.staffchat.send: true
+      gep.staffchat.receive: true
       gep.staff: true
       gep.chat.seeall: true
       gep.chat.mute: true

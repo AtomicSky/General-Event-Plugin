@@ -12,7 +12,7 @@ public class GEP extends JavaPlugin implements CommandExecutor, TabCompleter {
     Store store;
     Rules rules;
     Requests requests;
-    static final List<String> STAFF_NODES = List.of("staff", "chat.seeall", "chat.mute", "chat.mute.bypass", "spy", "freeze", "freeze.exempt",
+    static final List<String> STAFF_NODES = List.of("staffchat.send", "staffchat.receive", "staff", "chat.seeall", "chat.mute", "chat.mute.bypass", "spy", "freeze", "freeze.exempt",
         "elimination.exempt", "revive", "back", "requests.view", "requests.dashboard", "requests.visit.lore", "requests.visit.kill", "requests.visit.materials", "requests.visit.support",
         "requests.decide", "requests.close", "requests.release", "vanish", "vanish.see", "history", "audit", "reload", "config", "spectator.bypass");
     public boolean enabled(String path) { return getConfig().getBoolean(path + ".enabled", true); }

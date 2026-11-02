@@ -32,6 +32,7 @@ final class Requests implements Listener {
     }
     final GEP p;
     final Map<UUID, Long> prompts = new HashMap<>();
+    final Set<UUID> staffChat = new HashSet<>();
     final Set<UUID> hidden = new HashSet<>();
     final Set<UUID> indicators = new HashSet<>();
     Requests(GEP plugin) { p = plugin; }
@@ -291,10 +292,35 @@ final class Requests implements Listener {
         if (p.store.data.contains("visits." + player.getUniqueId())) player.sendMessage(Component.text("[GEP] Saved request return available.").append(button("Return", "/staff return")));
         tick();
     }
-    @EventHandler void quit(PlayerQuitEvent e) { prompts.remove(e.getPlayer().getUniqueId()); }
+    @EventHandler void quit(PlayerQuitEvent e) { prompts.remove(e.getPlayer().getUniqueId()); staffChat.remove(e.getPlayer().getUniqueId()); }
+    void staffMessage(Player player,String message) {
+        GEP.require(player,"staffchat.send"); p.feature("staff-chat");
+        if(p.rules.chatBlocked(player)) throw new IllegalArgumentException("Spectators cannot chat.");
+        if(message.isBlank()) throw new IllegalArgumentException("Use /staff chat <message>.");
+        Component line=Component.text("[Staff] ",NamedTextColor.AQUA).append(Component.text(player.getName()+": ",NamedTextColor.GOLD)).append(Component.text(message,NamedTextColor.WHITE));
+        for(Player recipient:Bukkit.getOnlinePlayers()) if(recipient.hasPermission("gep.staffchat.receive")||recipient.equals(player))recipient.sendMessage(line);
+    }
+    boolean staffInput(ChatEvent event) {
+        Player player=event.getPlayer();
+        if(!staffChat.contains(player.getUniqueId()) || prompts.containsKey(player.getUniqueId())) return false;
+        event.setCancelled(true);
+        try { staffMessage(player,PlainTextComponentSerializer.plainText().serialize(event.message())); }
+        catch(IllegalArgumentException ex){GEP.tell(player,ex.getMessage()+" Use /staff chat off to return to public chat.");}
+        return true;
+    }
     void command(Player player, String[] args) {
         if (args.length == 0) { open(player); return; }
         String action = args[0].toLowerCase(Locale.ROOT);
+        if(action.equals("chat")) {
+            if(args.length==2 && args[1].equalsIgnoreCase("off")){staffChat.remove(player.getUniqueId());GEP.tell(player,"Staff chat mode OFF. Your chat is public again.");return;}
+            GEP.require(player,"staffchat.send");p.feature("staff-chat");
+            if(args.length==1 || (args.length==2 && args[1].equalsIgnoreCase("on"))){
+                boolean on=args.length==2 || !staffChat.contains(player.getUniqueId());
+                if(on)staffChat.add(player.getUniqueId());else staffChat.remove(player.getUniqueId());
+                GEP.tell(player,on?"Staff chat mode ON. Normal messages go to staff. /staff chat off returns to public chat.":"Staff chat mode OFF. Your chat is public again.");
+            }else staffMessage(player,String.join(" ",Arrays.copyOfRange(args,1,args.length)));
+            return;
+        }
         if (action.equals("return")) { back(player); return; } // Owner-only recovery works after feature/permission removal.
         if (action.equals("cancel")) { prompts.remove(player.getUniqueId()); GEP.tell(player, "Request input cancelled."); return; }
         if (action.equals("target") && args.length == 2) { input(player, args[1]); return; }
@@ -319,6 +345,8 @@ final class Requests implements Listener {
     }
     List<String> tabs(CommandSender sender, String[] args) {
         List<String> values = new ArrayList<>(List.of("return", "cancel"));
+        if(sender.hasPermission("gep.staffchat.send")) values.add("chat");
+        if(args.length>1 && args[0].equalsIgnoreCase("chat"))return args.length==2?List.of("on","off").stream().filter(v->v.startsWith(args[1].toLowerCase(Locale.ROOT))).toList():List.of();
         if (sender.hasPermission("gep.requests.view")) values.add("list");
         if (sender.hasPermission("gep.requests.dashboard") && sender.hasPermission("gep.requests.view")) values.add("dashboard");
         if (sender.hasPermission("gep.requests.decide")) values.addAll(List.of("approve", "deny"));

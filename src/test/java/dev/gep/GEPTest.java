@@ -448,4 +448,18 @@ class GEPTest {
         p.getConfig().set("vanish.indicator.enabled",true);p.requests.tick();assertTrue(p.requests.indicators.contains(staff.getUniqueId()));
         p.requests.vanish(staff,new String[]{"off"});assertFalse(p.requests.indicators.contains(staff.getUniqueId()));
     }
+
+    @Test void staffChatStaysPrivateAndFailsClosedAfterPermissionLoss() {
+        var sender=player("Sender",0);var staff=player("Helper",1000);var user=player("User",1);
+        grant(sender,"staffchat.send");grant(staff,"staffchat.receive");
+        messages(sender);messages(staff);messages(user);
+        p.requests.command(sender,new String[]{"chat","private","hello"});
+        assertTrue(messages(staff).contains("private hello"));assertFalse(messages(user).contains("private hello"));
+        p.requests.command(sender,new String[]{"chat","on"});
+        var event=chat(sender,sender,staff,user);p.rules.blockChat(event);assertTrue(event.isCancelled());
+        assertTrue(messages(staff).contains("hello"));assertFalse(messages(user).contains("hello"));
+        p.getConfig().set("staff-chat.enabled",false);event=chat(sender,user);p.rules.blockChat(event);assertTrue(event.isCancelled());
+        p.requests.command(sender,new String[]{"chat","off"});event=chat(sender,user);p.rules.blockChat(event);assertFalse(event.isCancelled());
+        assertThrows(IllegalArgumentException.class,()->p.requests.staffMessage(user,"forbidden"));
+    }
 }
